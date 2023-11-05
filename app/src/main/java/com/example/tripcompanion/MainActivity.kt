@@ -11,7 +11,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.tripcompanion.graphs.BottomNavGraph
+import com.example.tripcompanion.graphs.RootNavGraph
 import com.example.tripcompanion.ui.bottom_navigation.BottomNavMenu
 import com.example.tripcompanion.ui.theme.TripCompanionTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                                 .fillMaxSize()
                                 .padding(bottom = it.calculateBottomPadding())
                         ){
-                            BottomNavGraph(navController = navController)
+                            RootNavGraph(navController = navController)
                         }
                     }
                 }

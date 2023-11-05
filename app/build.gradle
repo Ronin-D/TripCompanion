@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlinx-serialization'
     id 'kotlin-kapt'
     id("com.google.dagger.hilt.android")
 }
@@ -84,6 +85,9 @@ dependencies {
     //navigation
     def nav_version = "2.5.3"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    //okhttp3
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
 
 
