@@ -8,6 +8,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -18,6 +20,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.tripcompanion.ui.theme.DarkBlue
 import com.example.tripcompanion.util.BottomNavMenuItem
+import com.example.tripcompanion.util.Screens
 
 @Composable
 fun BottomNavMenu(navController: NavController) {
@@ -26,44 +29,58 @@ fun BottomNavMenu(navController: NavController) {
         BottomNavMenuItem.AddTripScreen,
         BottomNavMenuItem.ProfileScreen,
     )
+    val otherScreens = listOf(
+        Screens.SignUp.route,
+        Screens.SignIn.route
+    )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val menuHeight = 52.dp
+    val visibility = remember{
+        mutableStateOf(0.dp)
+    }
     BottomNavigation(
         modifier = Modifier
             .fillMaxWidth()
-            .height(52.dp),
+            .height(visibility.value),
         backgroundColor = DarkBlue,
         contentColor = Color.White
     ){
-        items.forEach{screen->
-            val isSelected =  currentDestination?.hierarchy?.any { it.route==screen.route }==true
-            BottomNavigationItem(
-                selected = isSelected,
-                icon = {
-                    Icon(
-                        painter = rememberVectorPainter(image =
-                        if (isSelected){
-                            screen.selectedItemResource
+        if (otherScreens.contains(currentDestination?.route)){
+           visibility.value = 0.dp
+       }
+        else{
+            visibility.value = menuHeight
+            items.forEach{screen->
+                val isSelected =  currentDestination?.hierarchy?.any { it.route==screen.route }==true
+                BottomNavigationItem(
+                    selected = isSelected,
+                    icon = {
+                        Icon(
+                            painter = rememberVectorPainter(image =
+                            if (isSelected){
+                                screen.selectedItemResource
+                            }
+                            else{
+                                screen.unselectedItemResource
+                            }),
+                            contentDescription = "${screen.route} icon"
+                        )},
+                    label = {
+                        Text(text = screen.route, color = Color.White)
+                    },
+                    onClick = {
+                        navController.navigate(screen.route){
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        else{
-                            screen.unselectedItemResource
-                        }),
-                        contentDescription = "${screen.route} icon"
-                    )},
-                label = {
-                    Text(text = screen.route, color = Color.White)
-                },
-                onClick = {
-                    navController.navigate(screen.route){
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
                     }
-                }
-            )
-        }
+                )
+            }
+       }
     }
 
 }
