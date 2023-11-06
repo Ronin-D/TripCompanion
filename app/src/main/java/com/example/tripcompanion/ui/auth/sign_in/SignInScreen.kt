@@ -40,6 +40,7 @@ fun SignInScreen(
             value = viewModel.loginInputText.value,
             onValueChange ={
                 viewModel.loginInputText.value = it
+                viewModel.isLoginValid.value = true
             },
             placeholder =  "Login",
             modifier = Modifier
@@ -52,6 +53,7 @@ fun SignInScreen(
             value = viewModel.passwordInputText.value,
             onValueChange = {
                 viewModel.passwordInputText.value = it
+                viewModel.isPasswordValid.value = true
             },
             placeholder = "Password"
             ,
@@ -66,6 +68,7 @@ fun SignInScreen(
         }
         else{
             if (viewModel.isFound!=null&&viewModel.isFound!!){
+                viewModel.saveUserInfo()
                 onNavigateToMainScreen()
             }
             else if (viewModel.isFound!=null){
