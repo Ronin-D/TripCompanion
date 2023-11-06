@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tripcompanion.data.api.UserApi
 import com.example.tripcompanion.models.User
+import com.example.tripcompanion.repositories.DataStoreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val userApi: UserApi
+    private val userApi: UserApi,
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
     val loginInputText = mutableStateOf("")
     val passwordInputText = mutableStateOf("")
@@ -48,6 +50,13 @@ class SignInViewModel @Inject constructor(
         } else {
             isLoginValid.value = false
             isPasswordValid.value = false
+        }
+    }
+
+    fun saveUserInfo(){
+        viewModelScope.launch (Dispatchers.IO){
+            dataStoreRepository.setPref(DataStoreRepository.USER_LOGIN,loginInputText.value)
+            dataStoreRepository.setPref(DataStoreRepository.USER_PASSWORD,passwordInputText.value)
         }
     }
 
